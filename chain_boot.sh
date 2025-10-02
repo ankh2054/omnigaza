@@ -12,19 +12,13 @@ mkdir -p "$CONFIG_DIR" "$DATA_DIR"
 echo "CONFIG_DIR: $CONFIG_DIR"
 echo "DATA_DIR: $DATA_DIR"
 
-# ---- Build custom docker image ----
+# ---- Build docker image ----
 IMAGE_NAME="omnigaza-devnet"
 echo "Building custom devnet image..."
 docker build --platform=linux/amd64 -t "$IMAGE_NAME" .
 
-# Check if build succeeded
-if [ $? -ne 0 ]; then
-  echo "❌ Docker build failed!"
-  exit 1
-fi
-echo "✅ Docker image built successfully: $IMAGE_NAME"
 
-# ---- Create genesis.json with higher CPU/NET limits ----
+# ---- Create genesis.json ----
 cat > "${WORKDIR}/genesis.json" <<EOF
 {
   "initial_timestamp": "2025-09-30T08:55:11.000",
@@ -75,7 +69,7 @@ EOF
 
 # ---- Stop existing container if running ----
 docker stop "${NODE_NAME}" 2>/dev/null || true
-docker rm "${NODE_NAME}" 2>/dev/null || true
+docker rm -rf "${NODE_NAME}" 2>/dev/null || true
 
 # ---- Clean old database if it exists ----
 if [ -d "${DATA_DIR}" ]; then
@@ -180,20 +174,3 @@ echo "Setting up token system..."
 docker exec "$NODE_NAME" cleos push action eosio.token create '["eosio","10000000000.0000 SYS"]' -p eosio.token
 docker exec "$NODE_NAME" cleos push action eosio.token issue '["eosio","1000000000.0000 SYS","initial supply"]' -p eosio
 docker exec "$NODE_NAME" cleos push action eosio init '["0","4,SYS"]' -p eosio
-
-echo
-echo "✅ Devnet fully bootstrapped!"
-echo "HTTP: http://localhost:8888  P2P: 9876"
-echo "Data dir: $DATA_DIR"
-echo "Config dir: $CONFIG_DIR"
-echo "Genesis: ${WORKDIR}/genesis.json"
-echo
-echo "To restart without genesis (after first run):"
-echo "docker stop $NODE_NAME && docker rm $NODE_NAME"
-echo "docker run -d --name $NODE_NAME --restart unless-stopped \\"
-echo "  --platform linux/amd64 \\"
-echo "  -p 8888:8888 -p 9876:9876 \\"
-echo "  -v $DATA_DIR:/app/data \\"
-echo "  -v $CONFIG_DIR:/app/config \\"
-echo "  $IMAGE_NAME \\"
-echo "  bash -c \"keosd --unlock-timeout 999999999 --http-server-address 127.0.0.1:8900 & nodeos --data-dir /app/data --config-dir /app/config\""
