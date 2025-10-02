@@ -136,9 +136,8 @@ docker exec "$NODE_NAME" cleos  create account eosio eosio.stake EOS7MRd8aJco8Yf
 docker exec "$NODE_NAME" cleos  create account eosio eosio.vpay EOS7MRd8aJco8YfWxhRU5nqrk9x4GSiVgJBbC7uyuxg67S1zPuVft
 docker exec "$NODE_NAME" cleos  create account eosio eosio.rex EOS7MRd8aJco8YfWxhRU5nqrk9x4GSiVgJBbC7uyuxg67S1zPuVft
 
-# Get available protocol features and activate them FIRST
+
 echo "Activating protocol features..."
-# Activate protocol features (explicit hashes, ordered)
 docker exec "$NODE_NAME" cleos push action eosio activate '["c3a6138c5061cf291310887c0b5c71fcaffeab90d5deb50d3b9e687cead45071"]' -p eosio@active  # ACTION_RETURN_VALUE
 docker exec "$NODE_NAME" cleos push action eosio activate '["d528b9f6e9693f45ed277af93474fd473ce7d831dae2180cca35d907bd10cb40"]' -p eosio@active  # CONFIGURABLE_WASM_LIMITS2
 docker exec "$NODE_NAME" cleos push action eosio activate '["5443fcf88330c586bc0e5f3dee10e7f63c76c00249c87fe4fbf7f38c082006b4"]' -p eosio@active  # BLOCKCHAIN_PARAMETERS
